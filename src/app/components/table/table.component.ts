@@ -11,7 +11,8 @@ import { throwError } from 'rxjs';
 
 import { LocationsService } from '@services/locations.service';
 import { TableDataModel } from '@models/table-data.model';
-import { TableDialog } from '../table-dialog/table-dialog';
+import { TableDialog } from './table-dialog';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-table',
@@ -24,6 +25,7 @@ import { TableDialog } from '../table-dialog/table-dialog';
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
+    MatInputModule,
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
@@ -46,6 +48,7 @@ export class TableComponent implements OnInit {
       .pipe(
         tap(locations => {
           const tableData: TableDataModel[] = locations.map(l => ({
+            id: l.id,
             name: l.name,
             latitude: l.coordinates[0],
             longitude: l.coordinates[1],
@@ -62,13 +65,30 @@ export class TableComponent implements OnInit {
       .subscribe();
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.locations.filter = filterValue.trim().toLowerCase();
+
+    if (this.locations.paginator) {
+      this.locations.paginator.firstPage();
+    }
+  }
+
   editData(item: TableDataModel): void {
     const dialogRef = this.dialog.open(TableDialog, {
       data: {...item},
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.table.renderRows();
+    dialogRef.afterClosed().subscribe(  result => {
+      if (!result) {
+        return;
+      }
+
+      const i = this.locations.data.findIndex(({ id }) => id === item.id);
+      this.locations.data[i] = result;
+      this.locations.filter = '';
+
+      console.log(this.locations.data);
     });
   }
 
@@ -78,10 +98,18 @@ export class TableComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(this.locations);
-      this.locations.data.push(result)
-      this.table.renderRows();
-      console.log(this.locations);
+      if (!result) {
+        return;
+      }
+
+      this.locations.data.push(result);
+      this.locations.filter = '';
+
+      console.log(this.locations.data);
     });
+  }
+
+  trackByFn(index: number): number {
+    return index;
   }
 }

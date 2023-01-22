@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{ data.id ? 'Edit location' : 'Add location' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Location Name</mat-label>
+      <input matInput type="text" formControlName="name">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Location Latitude</mat-label>
+      <input matInput type="number" formControlName="latitude">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Location Longitude</mat-label>
+      <input matInput type="number" formControlName="longitude">
+    </mat-form-field>
+
+    <div mat-dialog-actions>
+      <button mat-button type="button" (click)="cancel()">Cancel</button>
+      <button mat-button type="submit" (click)="submit()" [disabled]="form.invalid">{{ data.id ? 'Save' : 'Create' }}</button>
+    </div>
+  </form>
+</div>
