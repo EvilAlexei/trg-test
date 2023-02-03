@@ -6,10 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { LocationModel } from '@models/location.model';
 
-const generateId = (): number => {
-  return 1;
-}
-
 @Injectable({
   providedIn: 'root'
 })

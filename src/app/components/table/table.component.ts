@@ -28,7 +28,6 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
   ],
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit {
   locations!: MatTableDataSource<TableDataModel>;
@@ -59,7 +58,8 @@ export class TableComponent implements OnInit {
         }),
         catchError(err => {
           console.log('Error loading', err);
-          return throwError(err)
+
+          return throwError(err);
         })
       )
       .subscribe();
